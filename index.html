@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Drone Flight Animation</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="libs/leaflet.css" />
+    <link rel="stylesheet" href="libs/Widgets.css">
     <style>
         #map {
             height: 600px;
@@ -13,10 +14,9 @@
 </head>
 <body>
     <div id="map"></div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-animatedmarker/src/AnimatedMarker.js"></script>
-    <script src="https://cesiumjs.org/releases/1.73/Build/Cesium/Cesium.js"></script>
-    <link href="https://cesiumjs.org/releases/1.73/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="libs/leaflet.js"></script>
+    <script src="libs/AnimatedMarker.js"></script>
+    <script src="libs/Cesium.js"></script>
     <script>
         // Initialize the map
         var map = L.map('map').setView([46.0, 13.0], 5);
