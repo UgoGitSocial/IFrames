@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="cesium/Widgets/widgets.css">
     <style>
         #map { height: 100vh; width: 100vw; }
+        #cesiumContainer { height: 100vh; width: 100vw; display: none; }
     </style>
 </head>
 <body>
     <div id="map"></div>
+    <div id="cesiumContainer"></div>
     <script src="leaflet/leaflet.js"></script>
     <script src="animatedmarker/animatedmarker.js"></script>
     <script src="cesium/Cesium.js"></script>
@@ -43,6 +45,10 @@
 
         // Funzione per fare zoom out
         function zoomOut() {
+            // Nascondi la mappa di Leaflet e mostra il contenitore di Cesium
+            document.getElementById('map').style.display = 'none';
+            document.getElementById('cesiumContainer').style.display = 'block';
+
             // Inizializza Cesium Viewer
             var viewer = new Cesium.Viewer('cesiumContainer', {
                 imageryProvider: false,
