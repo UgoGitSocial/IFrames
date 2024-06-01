@@ -66,7 +66,7 @@ L.AnimatedMarker = L.Marker.extend({
     }
     
     // Modifica il valore di speed per rallentare il movimento
-    speed *= 2; // Rallenta il movimento del marker di un fattore di 2
+    speed *= 4; // Rallenta il movimento del marker di un fattore di 2
 
     // Only if CSS3 transitions are supported
     if (L.DomUtil.TRANSITION) {
