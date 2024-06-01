@@ -80,7 +80,7 @@ L.AnimatedMarker = L.Marker.extend({
     this._i++;
 
     // Zoom sulla posizione del marker
-    map.setView(this.getLatLng(), 2); // Imposta lo zoom sulla posizione del marker con un livello di zoom di 15
+    map.setView(this.getLatLng(), 10); // Imposta lo zoom sulla posizione del marker con un livello di zoom di 15
 
     // Queue up the animation to the next next vertex
     this._tid = setTimeout(function(){
