@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Drone Flight Animation</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-animatedmarker/src/AnimatedMarker.js"></script>
+    <script src="https://cesiumjs.org/releases/1.73/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesiumjs.org/releases/1.73/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([46.0, 13.0], 5);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Define the route coordinates
+        var route = [
+            [46.0, 13.0], // Udine
+            [44.5, 11.34], // Bologna
+            [51.05, 13.73], // Dresden
+            [50.08, 14.44]  // Prague
+        ];
+
+        // Create the animated marker
+        var animatedMarker = L.animatedMarker(
+            L.polyline(route).getLatLngs(), {
+                autoStart: false,
+                distance: 5000, // meters
+                interval: 2000, // milliseconds
+            }
+        );
+
+        map.addLayer(animatedMarker);
+        animatedMarker.start();
+
+        // After the marker reaches the last point, switch to Cesium for zoom out effect
+        animatedMarker.on('end', function() {
+            document.getElementById('map').style.display = 'none';
+            startCesium();
+        });
+
+        function startCesium() {
+            // Initialize Cesium viewer
+            var viewer = new Cesium.Viewer('map', {
+                timeline: false,
+                animation: false
+            });
+
+            // Fly to Prague
+            viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(14.44, 50.08, 15000),
+                complete: function() {
+                    setTimeout(function() {
+                        // Zoom out to view the Earth as a globe
+                        viewer.camera.flyTo({
+                            destination: Cesium.Cartesian3.fromDegrees(0, 0, 20000000)
+                        });
+                    }, 1000); // Wait for 1 second before zooming out
+                }
+            });
+        }
+    </script>
+</body>
+</html>
