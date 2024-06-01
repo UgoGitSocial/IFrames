@@ -38,8 +38,11 @@
 
     marker.on('move', function(e) {
       console.log("Moving to:", e.latlng, "Zoom level:", map.getZoom());
-      map.setView(e.latlng, 15, { animate: true, duration: 1.0 });
+      map.setView(e.latlng, map.getZoom(), { animate: true, duration: 1.0 });
     });
+
+    // Start the animation
+    marker.start();
   </script>
 </body>
 </html>
