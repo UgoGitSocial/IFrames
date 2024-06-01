@@ -56,7 +56,7 @@ L.AnimatedMarker = L.Marker.extend({
     this.setLatLng(this._latlngs[this._i]);
     this._i++;
 
-    map.setView(this.getLatLng(), 5, { animate: true, duration: 1.0 });  // Set zoom level and animate
+    map.setView(this.getLatLng(), 3, { animate: true, duration: 1.0 });  // Set zoom level and animate
     console.log("Animating to:", this.getLatLng(), "Speed:", speed);
 
     this._tid = setTimeout(function(){
