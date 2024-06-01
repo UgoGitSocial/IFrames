@@ -1,89 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Drone Animation</title>
-    <link rel="stylesheet" href="leaflet/leaflet.css">
-    <link rel="stylesheet" href="cesium/Widgets/widgets.css">
-    <style>
-        #map { height: 100vh; width: 100vw; }
-        #cesiumContainer { height: 100vh; width: 100vw; display: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drone Animation Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
 </head>
 <body>
-    <div id="map"></div>
-    <div id="cesiumContainer"></div>
-    <script src="leaflet/leaflet.js"></script>
-    <script src="animatedmarker/animatedmarker.js"></script>
-    <script src="cesium/Cesium.js"></script>
-    <script>
-        // Inizializza la mappa
-        var map = L.map('map').setView([46.0, 11.0], 5); // Centra la mappa su Udine
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <script src="libs/animatedmarker.js"></script>
+  <script>
+    var map = L.map('map').setView([46.0639, 13.2372], 6);
 
-        // Aggiungi il layer della mappa
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-        // Definisci le coordinate per il volo del drone
-        var coordinates = [
-            [46.0711, 13.2344],  // Udine
-            [44.4949, 11.3426],  // Bologna
-            [51.0504, 13.7373],  // Dresda
-            [50.0755, 14.4378]   // Praga
-        ];
+    var latlngs = [
+      [46.0639, 13.2372],  // Udine
+      [44.4949, 11.3426],  // Bologna
+      [51.0504, 13.7373],  // Dresda
+      [50.0755, 14.4378]   // Praga
+    ];
 
-        // Crea un marker animato
-        var droneMarker = L.animatedMarker(L.polyline(coordinates).getLatLngs(), {
-            autoStart: false,
-            distance: 3000,  // Velocità del drone (ms per movimento)
-            interval: 100    // Intervallo del frame (ms)
-        });
+    var marker = L.animatedMarker(latlngs, {
+      interval: 1000,  // milliseconds
+      onEnd: function() {
+        console.log("Animation finished");
+      }
+    }).addTo(map);
 
-        // Aggiungi il marker alla mappa
-        map.addLayer(droneMarker);
-
-        // Funzione per fare zoom out
-        function zoomOut() {
-            // Nascondi la mappa di Leaflet e mostra il contenitore di Cesium
-            document.getElementById('map').style.display = 'none';
-            document.getElementById('cesiumContainer').style.display = 'block';
-
-            // Inizializza Cesium Viewer
-            var viewer = new Cesium.Viewer('cesiumContainer', {
-                imageryProvider: false,
-                baseLayerPicker: false,
-                geocoder: false,
-                homeButton: false,
-                sceneModePicker: false,
-                timeline: false,
-                navigationHelpButton: false,
-                animation: false
-            });
-
-            // Posizione iniziale e finale della camera
-            var initialPosition = Cesium.Cartesian3.fromDegrees(14.4378, 50.0755, 1500); // Praga
-            var finalPosition = Cesium.Cartesian3.fromDegrees(14.4378, 50.0755, 35786000); // Spazio
-
-            // Imposta la posizione iniziale della camera
-            viewer.camera.setView({
-                destination: initialPosition
-            });
-
-            // Anima la camera verso la posizione finale
-            viewer.camera.flyTo({
-                destination: finalPosition,
-                duration: 5 // Durata dello zoom out in secondi
-            });
-        }
-
-        // Aggiungi un listener per l'animazione del marker
-        droneMarker.on('end', function() {
-            setTimeout(zoomOut, 1000); // Attendi 1 secondo prima dello zoom out
-        });
-
-        // Inizia l'animazione del drone
-        droneMarker.start();
-    </script>
+    marker.on('move', function(e) {
+      map.setView(e.latlng, 10, { animate: true, duration: 0.5 });
+    });
+  </script>
 </body>
 </html>
