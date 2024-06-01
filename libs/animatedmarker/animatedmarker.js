@@ -1,7 +1,7 @@
 L.AnimatedMarker = L.Marker.extend({
   options: {
-    distance: 200,  // meters
-    interval: 2000,  // milliseconds
+    distance: 200,
+    interval: 2000,
     autoStart: true,
     onEnd: function(){},
     clickable: false
@@ -13,10 +13,17 @@ L.AnimatedMarker = L.Marker.extend({
   },
 
   _chunk: function(latlngs) {
-    var i, len = latlngs.length, chunkedLatLngs = [];
-    for (i = 1; i < len; i++) {
-      var cur = latlngs[i-1], next = latlngs[i], dist = cur.distanceTo(next), factor = this.options.distance / dist,
-        dLat = factor * (next.lat - cur.lat), dLng = factor * (next.lng - cur.lng);
+    var i,
+        len = latlngs.length,
+        chunkedLatLngs = [];
+
+    for (i=1; i<len; i++) {
+      var cur = latlngs[i-1],
+          next = latlngs[i],
+          dist = cur.distanceTo(next),
+          factor = this.options.distance / dist,
+          dLat = factor * (next.lat - cur.lat),
+          dLng = factor * (next.lng - cur.lng);
 
       if (dist > this.options.distance) {
         while (dist > this.options.distance) {
@@ -28,38 +35,37 @@ L.AnimatedMarker = L.Marker.extend({
         chunkedLatLngs.push(cur);
       }
     }
-    chunkedLatLngs.push(latlngs[len - 1]);
+    chunkedLatLngs.push(latlngs[len-1]);
+
     return chunkedLatLngs;
   },
 
   onAdd: function (map) {
     L.Marker.prototype.onAdd.call(this, map);
+
     if (this.options.autoStart) {
       this.start();
     }
   },
 
   animate: function() {
-    var self = this, len = this._latlngs.length, speed = this.options.interval, map = this._map;
+    var self = this,
+        len = this._latlngs.length,
+        speed = this.options.interval;
 
     if (this._i < len && this._i > 0) {
-      speed = this._latlngs[this._i - 1].distanceTo(this._latlngs[this._i]) / this.options.distance * this.options.interval;
+      speed = this._latlngs[this._i-1].distanceTo(this._latlngs[this._i]) / this.options.distance * this.options.interval;
     }
 
-    speed *= 1.5;  // Slow down the animation
-
     if (L.DomUtil.TRANSITION) {
-      if (this._icon) { this._icon.style[L.DomUtil.TRANSITION] = 'all ' + speed + 'ms linear'; }
+      if (this._icon) { this._icon.style[L.DomUtil.TRANSITION] = ('all ' + speed + 'ms linear'); }
       if (this._shadow) { this._shadow.style[L.DomUtil.TRANSITION] = 'all ' + speed + 'ms linear'; }
     }
 
     this.setLatLng(this._latlngs[this._i]);
     this._i++;
 
-    map.setView(this.getLatLng(), 3, { animate: true, duration: 1.0 });  // Set zoom level and animate
-    console.log("Animating to:", this.getLatLng(), "Speed:", speed);
-
-    this._tid = setTimeout(function(){
+    this._tid = setTimeout(function() {
       if (self._i === len) {
         self.options.onEnd.apply(self, Array.prototype.slice.call(arguments));
       } else {
@@ -69,6 +75,7 @@ L.AnimatedMarker = L.Marker.extend({
   },
 
   start: function() {
+    this._i = 0;
     this.animate();
   },
 
@@ -78,7 +85,7 @@ L.AnimatedMarker = L.Marker.extend({
     }
   },
 
-  setLine: function(latlngs){
+  setLine: function(latlngs) {
     if (L.DomUtil.TRANSITION) {
       this._latlngs = latlngs;
     } else {
@@ -90,6 +97,6 @@ L.AnimatedMarker = L.Marker.extend({
   }
 });
 
-L.animatedMarker = function (latlngs, options) {
+L.animatedMarker = function(latlngs, options) {
   return new L.AnimatedMarker(latlngs, options);
 };
