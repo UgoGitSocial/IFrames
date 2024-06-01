@@ -1,7 +1,7 @@
 L.AnimatedMarker = L.Marker.extend({
   options: {
     distance: 200,  // meters
-    interval: 1000,  // milliseconds
+    interval: 2000,  // milliseconds
     autoStart: true,
     onEnd: function(){},
     clickable: false
@@ -56,7 +56,8 @@ L.AnimatedMarker = L.Marker.extend({
     this.setLatLng(this._latlngs[this._i]);
     this._i++;
 
-    map.setView(this.getLatLng(), 10, { animate: true, duration: 0.5 });  // Set zoom level and animate
+    map.setView(this.getLatLng(), 15, { animate: true, duration: 1.0 });  // Set zoom level and animate
+    console.log("Animating to:", this.getLatLng(), "Speed:", speed);
 
     this._tid = setTimeout(function(){
       if (self._i === len) {
