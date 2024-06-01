@@ -64,7 +64,11 @@ L.AnimatedMarker = L.Marker.extend({
     if (this._i < len && this._i > 0) {
       speed = this._latlngs[this._i-1].distanceTo(this._latlngs[this._i]) / this.options.distance * this.options.interval;
     }
-    
+
+   
+    // Modifica il valore di speed per rallentare il movimento
+    speed *= 0.2; // Rallenta il movimento del marker di un fattore di 2
+
     // Modifica il valore di speed per rallentare il movimento
     speed *= 4; // Rallenta il movimento del marker di un fattore di 2
 
