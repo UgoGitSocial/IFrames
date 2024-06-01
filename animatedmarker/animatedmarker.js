@@ -55,15 +55,18 @@ L.AnimatedMarker = L.Marker.extend({
     }
   },
 
-  animate: function() {
+ animate: function() {
     var self = this,
         len = this._latlngs.length,
         speed = this.options.interval;
 
     // Normalize the transition speed from vertex to vertex
-    if (this._i < len && this.i > 0) {
+    if (this._i < len && this._i > 0) {
       speed = this._latlngs[this._i-1].distanceTo(this._latlngs[this._i]) / this.options.distance * this.options.interval;
     }
+    
+    // Modifica il valore di speed per rallentare il movimento
+    speed *= 2; // Rallenta il movimento del marker di un fattore di 2
 
     // Only if CSS3 transitions are supported
     if (L.DomUtil.TRANSITION) {
@@ -84,6 +87,7 @@ L.AnimatedMarker = L.Marker.extend({
       }
     }, speed);
   },
+
 
   // Start the animation
   start: function() {
