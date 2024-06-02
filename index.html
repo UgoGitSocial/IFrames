@@ -34,15 +34,13 @@
             { lat: 50.0755, lon: 14.4378, name: "Praga" }
         ];
 
-        // Aggiungi i punti alla mappa con il drone come icona
-        var droneIconUrl = 'drone-image/drone.png';
+        // Aggiungi i punti alla mappa con il segno grafico personalizzato
         var droneEntity = viewer.entities.add({
             name: 'Drone',
             position: Cesium.Cartesian3.fromDegrees(locations[0].lon, locations[0].lat, 100),
-            billboard: {
-                image: droneIconUrl,
-                width: 32,
-                height: 32
+            point: {
+                pixelSize: 10, // Dimensione del segno grafico
+                color: Cesium.Color.RED // Colore del segno grafico
             }
         });
 
