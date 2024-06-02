@@ -15,60 +15,6 @@
 
     <script src="libs/leaflet/leaflet.js"></script>
     <script src="libs/animatedmarker/animatedmarker.js"></script>
-    <script>
-        // Crea la mappa
-        var map = L.map('map').setView([46.0, 13.0], 5);
-
-        // Aggiungi il layer delle tile
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Funzione per aggiungere una pausa tra i voli
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-
-        // Funzione per animare il drone
-        async function animateDrone() {
-            // Coordinati delle tappe
-            const locations = [
-                [46.0711, 13.2348], // Udine
-                [44.4949, 11.3426], // Bologna
-                [-47.7500, -65.9000], // Puerto Deseado
-                [53.3498, -6.2603], // Dublino
-                [51.0504, 13.7373], // Dresda
-                [50.0755, 14.4378] // Praga
-            ];
-
-            // Zoom corrispondente alle distanze
-            const zoomLevels = [12, 10, 4, 5, 10, 10];
-
-            // Marker iniziale
-            var marker = L.animatedMarker([locations[0]], {
-                icon: L.icon({
-                    iconUrl: 'https://example.com/drone.png', // Sostituisci con l'URL della tua immagine del drone
-                    iconSize: [32, 32],
-                    iconAnchor: [16, 16]
-                }),
-                distance: 500,  // Distanza tra i frame
-                interval: 50    // Velocità dell'animazione
-            }).addTo(map);
-
-            // Loop attraverso le destinazioni
-            for (let i = 1; i < locations.length; i++) {
-                map.setView(locations[i - 1], zoomLevels[i - 1]);  // Setta la vista e lo zoom
-                marker.animate({latlng: locations[i]}, 10000);     // Animazione verso la destinazione
-                await sleep(10000);  // Attendi il completamento dell'animazione
-                await sleep(1000);   // Pausa di 1 secondo
-            }
-
-            // Ultimo step per assicurarsi che il drone arrivi a Praga
-            map.setView(locations[locations.length - 1], zoomLevels[zoomLevels.length - 1]);
-        }
-
-        // Avvia l'animazione quando la mappa è pronta
-        map.whenReady(animateDrone);
-    </script>
+    <script src="map.html"></script>
 </body>
 </html>
