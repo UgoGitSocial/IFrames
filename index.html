@@ -34,24 +34,16 @@
             { lat: 50.0755, lon: 14.4378, name: "Praga" }
         ];
 
-        // Aggiungi i punti alla mappa
-        var entities = locations.map(location => {
-            return viewer.entities.add({
-                name: location.name,
-                position: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 100),
-                point: {
-                    pixelSize: 10,
-                    color: Cesium.Color.RED
-                },
-                label: {
-                    text: location.name,
-                    font: '14pt monospace',
-                    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                    outlineWidth: 2,
-                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                    pixelOffset: new Cesium.Cartesian2(0, -9)
-                }
-            });
+        // Aggiungi i punti alla mappa con il drone come icona
+        var droneIconUrl = 'drone-image/drone.png';
+        var droneEntity = viewer.entities.add({
+            name: 'Drone',
+            position: Cesium.Cartesian3.fromDegrees(locations[0].lon, locations[0].lat, 100),
+            billboard: {
+                image: droneIconUrl,
+                width: 32,
+                height: 32
+            }
         });
 
         // Funzione per aggiungere una pausa tra i voli
@@ -63,6 +55,7 @@
         async function animateDrone() {
             for (let i = 0; i < locations.length; i++) {
                 let location = locations[i];
+                droneEntity.position = Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 100);
                 viewer.camera.flyTo({
                     destination: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 1000000),
                     duration: 5 // Durata del volo in secondi
