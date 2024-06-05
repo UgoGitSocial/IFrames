@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.4/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.awesome-markers@2.0.5/dist/leaflet.awesome-markers.css">
     <style>
         #map {
             width: 100%;
@@ -17,36 +17,50 @@
 <body>
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.4/leaflet.awesome-markers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.awesome-markers@2.0.5/dist/leaflet.awesome-markers.min.js"></script>
     <script>
-        var map = L.map('map').setView([40.7128, -74.0060], 13);
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var map = L.map('map').setView([40.7128, -74.0060], 13);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(map);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(map);
 
-        var greenIcon = L.AwesomeMarkers.icon({
-            icon: 'coffee',
-            markerColor: 'green',
-            prefix: 'fa'
-        });
+                var greenIcon = L.AwesomeMarkers.icon({
+                    icon: 'coffee',
+                    markerColor: 'green',
+                    prefix: 'fa'
+                });
 
-        var redIcon = L.AwesomeMarkers.icon({
-            icon: 'car',
-            markerColor: 'red',
-            prefix: 'fa'
-        });
+                var redIcon = L.AwesomeMarkers.icon({
+                    icon: 'car',
+                    markerColor: 'red',
+                    prefix: 'fa'
+                });
 
-        var markers = [
-            {lat: 40.7128, lon: -74.0060, icon: greenIcon, popup: "Green Marker"},
-            {lat: 40.7328, lon: -74.0160, icon: redIcon, popup: "Red Marker"},
-            // Aggiungi altri marker se necessario
-        ];
+                var markers = [
+                    {lat: 40.7128, lon: -74.0060, icon: greenIcon, popup: "Green Marker"},
+                    {lat: 40.7328, lon: -74.0160, icon: redIcon, popup: "Red Marker"},
+                    // Aggiungi altri marker se necessario
+                ];
 
-        markers.forEach(function(marker) {
-            L.marker([marker.lat, marker.lon], {icon: marker.icon})
-                .addTo(map)
-                .bindPopup(marker.popup);
+                markers.forEach(function(marker) {
+                    L.marker([marker.lat, marker.lon], {icon: marker.icon})
+                        .addTo(map)
+                        .bindPopup(marker.popup)
+                        .openPopup();
+                });
+
+                // Marker standard per debugging
+                L.marker([40.7428, -74.0260])
+                    .addTo(map)
+                    .bindPopup('Standard Marker')
+                    .openPopup();
+
+            } catch (error) {
+                console.error('Error initializing map:', error);
+            }
         });
     </script>
 </body>
