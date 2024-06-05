@@ -48,23 +48,22 @@
             currentLocationIndex = (currentLocationIndex + 1) % locations.length;
             var nextLocation = locations[currentLocationIndex];
 
+            // Muovi la cartina verso la prossima posizione con una certa velocità
+            map.panTo([nextLocation.lat, nextLocation.lon], { duration: 3 });
+
             // Effettua lo zoom-out
-            map.setView([currentLocation.lat, currentLocation.lon], 4);
+            map.setZoom(4, { duration: 2 });
 
-            // Ritarda l'esecuzione dello zoom-out
+            // Ritarda l'esecuzione dello zoom-out e dello zoom-in
             setTimeout(function() {
-                // Effettua il movimento verso la prossima posizione
-                map.setView([nextLocation.lat, nextLocation.lon], 6);
+                // Effettua lo zoom-in
+                map.setZoom(10, { duration: 2 });
 
-                // Ritarda l'esecuzione dello zoom-in
+                // Chiama ricorsivamente la funzione per animare il drone
                 setTimeout(function() {
-                    // Effettua lo zoom-in
-                    map.setView([nextLocation.lat, nextLocation.lon], 10);
-
-                    // Chiama ricorsivamente la funzione per animare il drone
                     animateDrone();
-                }, 5000); // Tempo di attesa tra lo zoom-out e lo zoom-in
-            }, 5000); // Tempo di attesa dopo che il drone ha decollato
+                }, 2000); // Tempo di attesa dopo che il drone ha atterrato
+            }, 3000); // Tempo di attesa dopo che il drone ha decollato
         }
 
         // Aggiungi i marker delle tappe alla mappa
