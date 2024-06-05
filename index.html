@@ -14,7 +14,7 @@
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
-        var map = L.map('map').setView([46.0711, 13.2348], 13); // Imposta la vista iniziale su Udine
+        var map = L.map('map').setView([46.0711, 13.2348], 6); // Imposta la vista su Udine
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -47,35 +47,23 @@
 
         // Funzione per animare il drone
         function animateDrone() {
+            // Recupera la posizione corrente
             var currentLocation = locations[currentLocationIndex];
 
-            // Mostra il popup della posizione corrente
-            markers[currentLocationIndex].openPopup();
-
-            // Zoom-out su locations[CurrentLocation]; lo zoom dura 2 secondi
-            map.flyTo([currentLocation.lat, currentLocation.lon], 8, { animate: true, duration: 2 });
-
+            // Zoom-out su locations[CurrentLocation]; lo zoom dura 4 secondi;
+            map.setView([currentLocation.lat, currentLocation.lon], 4, { animate: true, duration: 4 });
             setTimeout(function() {
                 var nextLocationIndex = (currentLocationIndex + 1) % locations.length;
                 var nextLocation = locations[nextLocationIndex];
-
-                // Movimento verso la prossima località in 3 secondi
-                map.flyTo([nextLocation.lat, nextLocation.lon], 8, { animate: true, duration: 3 });
-
+                map.setView([nextLocation.lat, nextLocation.lon], 6, { animate: true, duration: 6 });
+                currentLocationIndex = nextLocationIndex;
                 setTimeout(function() {
-                    // Zoom-in su locations[CurrentLocation + 1]; lo zoom dura 2 secondi
-                    map.flyTo([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 2 });
-
-                    // Mostra il popup della nuova posizione
-                    markers[nextLocationIndex].openPopup();
-
-                    currentLocationIndex = nextLocationIndex;
-
+                    map.setView([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 4 });
                     setTimeout(function() {
                         animateDrone();
-                    }, 2000); // Tempo di attesa dopo lo zoom-in
-                }, 3000); // Tempo di attesa per il movimento
-            }, 2000); // Tempo di attesa per lo zoom-out
+                    }, 4000);
+                }, 6000);
+            }, 4000);
         }
 
         // Avvia l'animazione del drone
