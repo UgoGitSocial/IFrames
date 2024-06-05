@@ -30,13 +30,6 @@
             { lat: 50.0755, lon: 14.4378, name: "Praga" }
         ];
 
-        // Funzione per aggiungere i marker delle tappe
-        function addMarkers() {
-            locations.forEach(location => {
-                L.marker([location.lat, location.lon]).addTo(map).bindPopup(location.name);
-            });
-        }
-
         var currentLocationIndex = 0;
 
         // Funzione per animare il drone
@@ -44,30 +37,24 @@
             // Recupera la posizione corrente
             var currentLocation = locations[currentLocationIndex];
 
-            // Seleziona la prossima posizione
-            currentLocationIndex = (currentLocationIndex + 1) % locations.length;
-            var nextLocation = locations[currentLocationIndex];
-
-            // Muovi la cartina verso la prossima posizione con una certa velocità
-            map.panTo([nextLocation.lat, nextLocation.lon], { duration: 3000 });
-
-            // Effettua lo zoom-out
-            map.setZoom(4, { duration: 2000 });
-
-            // Ritarda l'esecuzione dello zoom-out e dello zoom-in
+            // Zoom-out su locations[CurrentLocation]; lo zoom dura 2 secondi;
+            map.setView([currentLocation.lat, currentLocation.lon], 4);
             setTimeout(function() {
-                // Effettua lo zoom-in
-                map.setZoom(10, { duration: 2000 });
-
-                // Chiama ricorsivamente la funzione per animare il drone
+                // Movimento su locations[CurrentLocation+1] a portare la località al centro del riquadro; il movimento dura 3 secondi;
+                var nextLocationIndex = (currentLocationIndex + 1) % locations.length;
+                var nextLocation = locations[nextLocationIndex];
+                map.setView([nextLocation.lat, nextLocation.lon], 6);
+                currentLocationIndex = nextLocationIndex;
                 setTimeout(function() {
-                    animateDrone();
-                }, 2000); // Tempo di attesa dopo che il drone ha atterrato
-            }, 3000); // Tempo di attesa dopo che il drone ha decollato
+                    // Zoom-in su locations[CurrentLocation+1]; lo zoom dura 2 secondi;
+                    map.setView([nextLocation.lat, nextLocation.lon], 13);
+                    setTimeout(function() {
+                        // CurrentLocation=CurrentLocation+1; se è l'ultima località della lista (nel nostro caso Praga) torna alla prima, cioè CurrentLocation=0;
+                        animateDrone();
+                    }, 2000);
+                }, 3000);
+            }, 1000);
         }
-
-        // Aggiungi i marker delle tappe alla mappa
-        addMarkers();
 
         // Avvia l'animazione del drone
         animateDrone();
