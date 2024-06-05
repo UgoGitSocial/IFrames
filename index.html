@@ -49,15 +49,15 @@
             var nextLocation = locations[currentLocationIndex];
 
             // Muovi la cartina verso la prossima posizione con una certa velocità
-            map.panTo([nextLocation.lat, nextLocation.lon], { duration: 300 });
+            map.panTo([nextLocation.lat, nextLocation.lon], { duration: 3000 });
 
             // Effettua lo zoom-out
-            map.setZoom(4, { duration: 200 });
+            map.setZoom(4, { duration: 2000 });
 
             // Ritarda l'esecuzione dello zoom-out e dello zoom-in
             setTimeout(function() {
                 // Effettua lo zoom-in
-                map.setZoom(10, { duration: 200 });
+                map.setZoom(10, { duration: 2000 });
 
                 // Chiama ricorsivamente la funzione per animare il drone
                 setTimeout(function() {
