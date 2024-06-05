@@ -51,16 +51,15 @@
             var currentLocation = locations[currentLocationIndex];
 
             // Zoom-out su locations[CurrentLocation]; lo zoom dura 2 secondi;
-            map.setView([currentLocation.lat, currentLocation.lon], 4, { animate: true, duration: 2000 });
+            map.setView([currentLocation.lat, currentLocation.lon], 4, { animate: true, duration: 2 });
             setTimeout(function() {
                 var nextLocationIndex = (currentLocationIndex + 1) % locations.length;
                 var nextLocation = locations[nextLocationIndex];
-                map.setView([nextLocation.lat, nextLocation.lon], 6, { animate: true, duration: 3000 });
-                currentLocationIndex = nextLocationIndex;
+                map.setView([nextLocation.lat, nextLocation.lon], 6, { animate: true, duration: 3 });
                 setTimeout(function() {
-                    map.setView([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 2000 });
-                    setTimeout(function() {animateDrone();
-                    }, 2000);
+                    currentLocationIndex = nextLocationIndex;
+                    map.setView([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 2 });
+                    setTimeout(animateDrone, 2000);
                 }, 3000);
             }, 2000);
         }
