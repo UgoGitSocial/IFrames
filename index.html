@@ -39,7 +39,7 @@
             name: 'Drone',
             position: Cesium.Cartesian3.fromDegrees(locations[0].lon, locations[0].lat, 100),
             point: {
-                pixelSize: 100, // Dimensione del segno grafico
+                pixelSize: 10, // Dimensione del segno grafico
                 color: Cesium.Color.RED // Colore del segno grafico
             }
         });
@@ -61,6 +61,8 @@
                 await sleep(6000); // Attendi il completamento del volo
                 await sleep(1000); // Pausa di 1 secondo
             }
+            // Ripeti l'animazione
+            animateDrone();
         }
 
         // Avvia l'animazione quando il viewer è pronto
