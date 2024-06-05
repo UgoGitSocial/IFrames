@@ -38,7 +38,7 @@
         locations.forEach(location => {
             viewer.entities.add({
                 name: location.name,
-                position: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 100),
+                position: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 0), // Assicurati che l'altitudine sia 0
                 point: {
                     pixelSize: 10,
                     color: Cesium.Color.BLACK
@@ -55,7 +55,7 @@
             });
         });
 
-        // Aggiungi i punti alla mappa con il segno grafico personalizzato
+        // Aggiungi il drone alla mappa
         var droneEntity = viewer.entities.add({
             name: 'Drone',
             position: Cesium.Cartesian3.fromDegrees(locations[0].lon, locations[0].lat, 100),
