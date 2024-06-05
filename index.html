@@ -31,6 +31,19 @@
         ];
 
         var currentLocationIndex = 0;
+        var markers = [];
+
+        // Funzione per aggiungere i marker delle tappe
+        function addMarkers() {
+            locations.forEach(location => {
+                var marker = L.marker([location.lat, location.lon]).addTo(map);
+                marker.bindPopup(location.name);
+                markers.push(marker);
+            });
+        }
+
+        // Aggiungi i marker delle tappe alla mappa
+        addMarkers();
 
         // Funzione per animare il drone
         function animateDrone() {
@@ -61,3 +74,4 @@
     </script>
 </body>
 </html>
+
