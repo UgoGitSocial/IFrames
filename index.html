@@ -34,6 +34,27 @@
             { lat: 50.0755, lon: 14.4378, name: "Praga" }
         ];
 
+        // Aggiungi le località alla mappa con punti neri e nomi
+        locations.forEach(location => {
+            viewer.entities.add({
+                name: location.name,
+                position: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 100),
+                point: {
+                    pixelSize: 10,
+                    color: Cesium.Color.BLACK
+                },
+                label: {
+                    text: location.name,
+                    font: '14pt sans-serif',
+                    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    pixelOffset: new Cesium.Cartesian2(0, -20),
+                    fillColor: Cesium.Color.BLACK
+                }
+            });
+        });
+
         // Aggiungi i punti alla mappa con il segno grafico personalizzato
         var droneEntity = viewer.entities.add({
             name: 'Drone',
