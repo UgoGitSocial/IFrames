@@ -2,30 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Drone Animation with Cesium</title>
+    <title>Drone Animation with Leaflet</title>
     <link rel="stylesheet" href="libs/leaflet/leaflet.css">
     <style>
-        #cesiumContainer {
-            width: 100%;
+        #map {
             height: 100vh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
         }
     </style>
 </head>
 <body>
-    <div id="cesiumContainer"></div>
+    <div id="map"></div>
     <script src="libs/leaflet/leaflet.js"></script>
     <script>
-        // Configura Leaflet Map
-        var mymap = L.map('cesiumContainer').setView([46.0711, 13.2348], 5);
+        var map = L.map('map').setView([46.0711, 13.2348], 6); // Imposta la vista su Udine
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-        }).addTo(mymap);
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-        // Coordinati delle tappe
+        // Array delle posizioni delle tappe
         const locations = [
             { lat: 46.0711, lon: 13.2348, name: "Udine" },
             { lat: 44.4949, lon: 11.3426, name: "Bologna" },
@@ -35,50 +30,46 @@
             { lat: 50.0755, lon: 14.4378, name: "Praga" }
         ];
 
-        // Aggiungi le località alla mappa con punti neri e nomi
-        locations.forEach(location => {
-            L.marker([location.lat, location.lon]).addTo(mymap)
-                .bindPopup(location.name);
-        });
+        // Funzione per aggiungere i marker delle tappe
+        function addMarkers() {
+            locations.forEach(location => {
+                L.marker([location.lat, location.lon]).addTo(map).bindPopup(location.name);
+            });
+        }
+
+        var currentLocationIndex = 0;
 
         // Funzione per animare il drone
-        async function animateDrone() {
-            for (let i = 0; i < locations.length; i++) {
-                let location = locations[i];
-                await panToLocation(location.lat, location.lon, 3);
-                await zoomToLocation(location.lat, location.lon, 10, 2);
-            }
-            animateDrone();
+        function animateDrone() {
+            // Recupera la posizione corrente
+            var currentLocation = locations[currentLocationIndex];
+
+            // Seleziona la prossima posizione
+            currentLocationIndex = (currentLocationIndex + 1) % locations.length;
+            var nextLocation = locations[currentLocationIndex];
+
+            // Muovi la cartina verso la prossima posizione con una certa velocità
+            map.panTo([nextLocation.lat, nextLocation.lon], { duration: 300 });
+
+            // Effettua lo zoom-out
+            map.setZoom(4, { duration: 200 });
+
+            // Ritarda l'esecuzione dello zoom-out e dello zoom-in
+            setTimeout(function() {
+                // Effettua lo zoom-in
+                map.setZoom(10, { duration: 200 });
+
+                // Chiama ricorsivamente la funzione per animare il drone
+                setTimeout(function() {
+                    animateDrone();
+                }, 2000); // Tempo di attesa dopo che il drone ha atterrato
+            }, 3000); // Tempo di attesa dopo che il drone ha decollato
         }
 
-        // Funzione per effettuare lo zoom sulla località
-        async function zoomToLocation(lat, lon, zoomLevel, durationSeconds) {
-            return new Promise(resolve => {
-                mymap.flyTo([lat, lon], zoomLevel, {
-                    duration: durationSeconds * 1000,
-                    animate: true,
-                    easeLinearity: 0.5,
-                    noMoveStart: true,
-                    maxZoom: zoomLevel
-                });
-                setTimeout(resolve, durationSeconds * 1000);
-            });
-        }
+        // Aggiungi i marker delle tappe alla mappa
+        addMarkers();
 
-        // Funzione per effettuare il pan sulla località
-        async function panToLocation(lat, lon, durationSeconds) {
-            return new Promise(resolve => {
-                mymap.flyTo([lat, lon], mymap.getZoom(), {
-                    duration: durationSeconds * 1000,
-                    animate: true,
-                    easeLinearity: 0.5,
-                    noMoveStart: true
-                });
-                setTimeout(resolve, durationSeconds * 1000);
-            });
-        }
-
-        // Avvia l'animazione quando il viewer è pronto
+        // Avvia l'animazione del drone
         animateDrone();
     </script>
 </body>
