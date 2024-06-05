@@ -38,7 +38,7 @@
         locations.forEach(location => {
             viewer.entities.add({
                 name: location.name,
-                position: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 0), // Assicurati che l'altitudine sia 0
+                position: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 0),
                 point: {
                     pixelSize: 10,
                     color: Cesium.Color.BLACK
@@ -60,8 +60,8 @@
             name: 'Drone',
             position: Cesium.Cartesian3.fromDegrees(locations[0].lon, locations[0].lat, 100),
             point: {
-                pixelSize: 10, // Dimensione del segno grafico
-                color: Cesium.Color.RED // Colore del segno grafico
+                pixelSize: 10,
+                color: Cesium.Color.RED
             }
         });
 
@@ -77,12 +77,11 @@
                 droneEntity.position = Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 100);
                 viewer.camera.flyTo({
                     destination: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 1000000),
-                    duration: 5 // Durata del volo in secondi
+                    duration: 5
                 });
-                await sleep(6000); // Attendi il completamento del volo
-                await sleep(1000); // Pausa di 1 secondo
+                await sleep(6000);
+                await sleep(1000);
             }
-            // Ripeti l'animazione
             animateDrone();
         }
 
