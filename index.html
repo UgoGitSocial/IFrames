@@ -2,33 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Drone Animation with Cesium</title>
-    <link rel="stylesheet" href="libs/cesium/Widgets/widgets.css">
+    <title>Drone Animation with Leaflet</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44c2pxXO5vsegFvX6CHP7QcVY93PognFfCIOv0F4cgBbXQ==" crossorigin=""/>
     <style>
-        #cesiumContainer {
+        #map {
             width: 100%;
             height: 100vh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
         }
     </style>
 </head>
 <body>
-    <div id="cesiumContainer"></div>
-    <script src="libs/cesium/Cesium.js"></script>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/leaflet.awesome-markers@2.0.5/dist/leaflet.awesome-markers.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <div id="map"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+sGaC7wis09AwqE1MWxHjT9IOQQyPx2S5QY0M4/gkW60F9gUI5ZjbxwDQh4eZPIkfTfA==" crossorigin=""></script>
     <script>
-        // Configura Cesium Viewer
-        var viewer = new Cesium.Viewer('cesiumContainer', {
-            animation: false,
-            timeline: false
-        });
+        var map = L.map('map').setView([46.0711, 13.2348], 5);
 
-        // Coordinati delle tappe
-        const locations = [
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var locations = [
             { lat: 46.0711, lon: 13.2348, name: "Udine" },
             { lat: 44.4949, lon: 11.3426, name: "Bologna" },
             { lat: -47.7500, lon: -65.9000, name: "Puerto Deseado" },
@@ -37,66 +30,35 @@
             { lat: 50.0755, lon: 14.4378, name: "Praga" }
         ];
 
-        // Aggiungi le località alla mappa con punti neri e nomi
         locations.forEach(location => {
-            viewer.entities.add({
-                name: location.name,
-                position: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 0),
-                point: {
-                    pixelSize: 10,
-                    color: Cesium.Color.BLACK
-                },
-                label: {
-                    text: location.name,
-                    font: '14pt sans-serif',
-                    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                    outlineWidth: 2,
-                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                    pixelOffset: new Cesium.Cartesian2(0, -20),
-                    fillColor: Cesium.Color.BLACK
-                }
-            });
+            L.marker([location.lat, location.lon]).addTo(map)
+            .bindPopup(location.name);
         });
 
         // Aggiungi il drone alla mappa
-        var droneEntity = viewer.entities.add({
-            name: 'Drone',
-            position: Cesium.Cartesian3.fromDegrees(locations[0].lon, locations[0].lat, 100),
-            point: {
-                pixelSize: 10,
-                color: Cesium.Color.RED
-            }
+        var droneIcon = L.icon({
+            iconUrl: 'https://leafletjs.com/examples/custom-icons/leaf-red.png',
+            iconSize: [38, 95],
+            iconAnchor: [22, 94],
+            popupAnchor: [-3, -76]
         });
 
-        // Funzione per aggiungere una pausa tra i voli
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
+        L.marker([locations[0].lat, locations[0].lon], {icon: droneIcon}).addTo(map)
+        .bindPopup('Drone');
 
         // Funzione per animare il drone
         async function animateDrone() {
             for (let i = 0; i < locations.length; i++) {
                 let location = locations[i];
-                droneEntity.position = Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 100);
-                viewer.camera.flyTo({
-                    destination: Cesium.Cartesian3.fromDegrees(location.lon, location.lat, 1000000),
-                    duration: 5
-                });
+                map.setView([location.lat, location.lon], 5);
                 await sleep(6000);
                 await sleep(1000);
             }
             animateDrone();
         }
 
-        // Avvia l'animazione quando il viewer è pronto
-        viewer.scene.postRender.addEventListener(() => {
-            if (!animateDroneStarted) {
-                animateDroneStarted = true;
-                animateDrone();
-            }
-        });
-
-        let animateDroneStarted = false;
+        // Avvia l'animazione
+        animateDrone();
     </script>
 </body>
 </html>
