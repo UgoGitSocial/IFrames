@@ -38,22 +38,22 @@
             var currentLocation = locations[currentLocationIndex];
 
             // Zoom-out su locations[CurrentLocation]; lo zoom dura 2 secondi;
-            map.setView([currentLocation.lat, currentLocation.lon], 4);
+            map.setView([currentLocation.lat, currentLocation.lon], 4, { animate: true, duration: 2000 });
             setTimeout(function() {
                 // Movimento su locations[CurrentLocation+1] a portare la località al centro del riquadro; il movimento dura 3 secondi;
                 var nextLocationIndex = (currentLocationIndex + 1) % locations.length;
                 var nextLocation = locations[nextLocationIndex];
-                map.setView([nextLocation.lat, nextLocation.lon], 6);
+                map.setView([nextLocation.lat, nextLocation.lon], 6, { animate: true, duration: 3000 });
                 currentLocationIndex = nextLocationIndex;
                 setTimeout(function() {
                     // Zoom-in su locations[CurrentLocation+1]; lo zoom dura 2 secondi;
-                    map.setView([nextLocation.lat, nextLocation.lon], 13);
+                    map.setView([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 2000 });
                     setTimeout(function() {
                         // CurrentLocation=CurrentLocation+1; se è l'ultima località della lista (nel nostro caso Praga) torna alla prima, cioè CurrentLocation=0;
                         animateDrone();
                     }, 2000);
                 }, 3000);
-            }, 1000);
+            }, 2000);
         }
 
         // Avvia l'animazione del drone
