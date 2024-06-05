@@ -13,6 +13,7 @@
 <body>
     <div id="map"></div>
     <script src="libs/leaflet/leaflet.js"></script>
+    <script src="libs/leaflet/Leaflet.SmoothPan.js"></script>
     <script>
         var map = L.map('map').setView([46.0711, 13.2348], 6); // Imposta la vista su Udine
 
@@ -49,21 +50,21 @@
             var nextLocation = locations[currentLocationIndex];
 
             // Muovi la cartina verso la prossima posizione con una certa velocità
-            map.panTo([nextLocation.lat, nextLocation.lon], { duration: 3000 });
+            map.smoothPanTo([nextLocation.lat, nextLocation.lon], { duration: 3 });
 
             // Effettua lo zoom-out
-            map.setZoom(4, { duration: 2000 });
+            map.setZoom(4);
 
             // Ritarda l'esecuzione dello zoom-out e dello zoom-in
             setTimeout(function() {
                 // Effettua lo zoom-in
-                map.setZoom(10, { duration: 2000 });
+                map.setZoom(10);
 
                 // Chiama ricorsivamente la funzione per animare il drone
                 setTimeout(function() {
                     animateDrone();
-                }, 2000); // Tempo di attesa dopo che il drone ha atterrato
-            }, 3000); // Tempo di attesa dopo che il drone ha decollato
+                }, 5000); // Tempo di attesa dopo che il drone ha atterrato (lo zoom-in dura 2 secondi, quindi aggiungiamo 3 secondi)
+            }, 3000); // Tempo di attesa dopo che il drone ha decollato (lo zoom-out dura 2 secondi, quindi aggiungiamo 1 secondo)
         }
 
         // Aggiungi i marker delle tappe alla mappa
