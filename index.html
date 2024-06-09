@@ -75,14 +75,7 @@
                     // Movimento verso la prossima località in 6 secondi
                     map.flyTo([nextLocation.lat, nextLocation.lon], 8, { animate: true, duration: 6 });
 
-                    // Ridisegna la linea durante il movimento
-                    var moveInterval = setInterval(function() {
-                        drawLine([currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]);
-                    }, 100);
-
                     setTimeout(function() {
-                        clearInterval(moveInterval); // Ferma il ridisegno della linea
-
                         // Rimuovi la linea prima dello zoom-in
                         map.removeLayer(polyline);
 
