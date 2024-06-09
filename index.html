@@ -32,6 +32,7 @@
 
         var currentLocationIndex = 0;
         var markers = [];
+        var polyline; // Variabile per conservare la linea
 
         // Funzione per aggiungere i marker delle tappe
         function addMarkers() {
@@ -59,23 +60,34 @@
                 var nextLocationIndex = (currentLocationIndex + 1) % locations.length;
                 var nextLocation = locations[nextLocationIndex];
 
-                // Movimento verso la prossima località in 6 secondi
-                map.flyTo([nextLocation.lat, nextLocation.lon], 8, { animate: true, duration: 6 });
+                // Disegna una linea tra la località corrente e la prossima
+                if (polyline) {
+                    map.removeLayer(polyline); // Rimuovi la linea precedente
+                }
+                polyline = L.polyline([[currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]], { color: 'blue' }).addTo(map);
 
                 setTimeout(function() {
-                    // Zoom-in su locations[CurrentLocation + 1]; lo zoom dura 4 secondi
-                    map.flyTo([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 4 });
+                    // Movimento verso la prossima località in 6 secondi
+                    map.flyTo([nextLocation.lat, nextLocation.lon], 8, { animate: true, duration: 6 });
 
-                    // Mostra il popup della nuova posizione
-                    markers[nextLocationIndex].openPopup();
-
-                    currentLocationIndex = nextLocationIndex;
-
-                    // Chiamare la funzione di animazione dopo il completamento dello zoom-in
                     setTimeout(function() {
-                        animateDrone();
-                    }, 5000); // Tempo di attesa dopo lo zoom-in (5000ms invece di 4000ms)
-                }, 6000); // Tempo di attesa per il movimento
+                        // Rimuovi la linea prima dello zoom-in
+                        map.removeLayer(polyline);
+
+                        // Zoom-in su locations[CurrentLocation + 1]; lo zoom dura 4 secondi
+                        map.flyTo([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 4 });
+
+                        // Mostra il popup della nuova posizione
+                        markers[nextLocationIndex].openPopup();
+
+                        currentLocationIndex = nextLocationIndex;
+
+                        // Chiamare la funzione di animazione dopo il completamento dello zoom-in
+                        setTimeout(function() {
+                            animateDrone();
+                        }, 5000); // Tempo di attesa dopo lo zoom-in (5000ms invece di 4000ms)
+                    }, 6000); // Tempo di attesa per il movimento
+                }, 1000); // Tempo di attesa per mostrare la linea prima del movimento
             }, 4000); // Tempo di attesa per lo zoom-out
         }
 
