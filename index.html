@@ -58,6 +58,12 @@
             polyline = L.polyline([from, to], { color: 'blue' }).addTo(map);
         }
 
+        // Funzione per adattare la vista della mappa per mostrare entrambe le località
+        function fitMapToBounds(from, to) {
+            var bounds = L.latLngBounds(from, to);
+            map.fitBounds(bounds, { animate: true, duration: 4 });
+        }
+
         // Funzione per animare il drone
         function animateDrone() {
             var currentLocation = locations[currentLocationIndex];
@@ -74,6 +80,9 @@
 
                 // Disegna una linea tra la località corrente e la prossima
                 drawLine([currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]);
+
+                // Adatta la vista della mappa per mostrare entrambe le località
+                fitMapToBounds([currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]);
 
                 // Aggiungi un marker per il drone se non esiste
                 if (!droneMarker) {
