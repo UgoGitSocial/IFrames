@@ -82,65 +82,59 @@
                 // Disegna una linea tra la località corrente e la prossima
                 drawLine([currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]);
 
-                // Adatta la vista della mappa per mostrare entrambe le località
-                fitMapToBounds([currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]);
-
-                // Aggiungi un marker per il drone se non esiste
-                if (!droneMarker) {
-                    droneMarker = L.marker([currentLocation.lat, currentLocation.lon], {
-                        icon: L.divIcon({ className: 'drone-icon', html: '🚁' }),
-                        interactive: false
-                    }).addTo(map);
-                }
-
                 // Effetto di dissolvenza (fade out)
                 document.getElementById('map').style.opacity = 0;
 
                 setTimeout(function() {
+                    // Adatta la vista della mappa per mostrare entrambe le località
+                    fitMapToBounds([currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]);
+
                     // Effetto di dissolvenza (fade in)
-                    document.getElementById('map').style.opacity = 1;
+                    setTimeout(function() {
+                        document.getElementById('map').style.opacity = 1;
+                        
+                        // Movimento verso la prossima località in 6 secondi
+                        var startPoint = [currentLocation.lat, currentLocation.lon];
+                        var endPoint = [nextLocation.lat, nextLocation.lon];
+                        var duration = 6;
+                        var steps = duration * 60; // Assumi 60 frame al secondo
+                        var stepLat = (endPoint[0] - startPoint[0]) / steps;
+                        var stepLon = (endPoint[1] - startPoint[1]) / steps;
+                        var currentStep = 0;
 
-                    // Movimento verso la prossima località in 6 secondi
-                    var startPoint = [currentLocation.lat, currentLocation.lon];
-                    var endPoint = [nextLocation.lat, nextLocation.lon];
-                    var duration = 6;
-                    var steps = duration * 60; // Assumi 60 frame al secondo
-                    var stepLat = (endPoint[0] - startPoint[0]) / steps;
-                    var stepLon = (endPoint[1] - startPoint[1]) / steps;
-                    var currentStep = 0;
+                        function moveDrone() {
+                            if (currentStep < steps) {
+                                var newLat = startPoint[0] + (stepLat * currentStep);
+                                var newLon = startPoint[1] + (stepLon * currentStep);
+                                droneMarker.setLatLng([newLat, newLon]);
+                                map.panTo([newLat, newLon], { animate: true, duration: 1 / 60 });
+                                currentStep++;
+                                requestAnimationFrame(moveDrone);
+                            } else {
+                                // Rimuovi la linea prima dello zoom-in
+                                map.removeLayer(polyline);
 
-                    function moveDrone() {
-                        if (currentStep < steps) {
-                            var newLat = startPoint[0] + (stepLat * currentStep);
-                            var newLon = startPoint[1] + (stepLon * currentStep);
-                            droneMarker.setLatLng([newLat, newLon]);
-                            map.panTo([newLat, newLon], { animate: true, duration: 1 / 60 });
-                            currentStep++;
-                            requestAnimationFrame(moveDrone);
-                        } else {
-                            // Rimuovi la linea prima dello zoom-in
-                            map.removeLayer(polyline);
+                                // Rimuovi il drone prima dello zoom-in
+                                map.removeLayer(droneMarker);
+                                droneMarker = null;
 
-                            // Rimuovi il drone prima dello zoom-in
-                            map.removeLayer(droneMarker);
-                            droneMarker = null;
+                                // Zoom-in su locations[CurrentLocation + 1]; lo zoom dura 4 secondi
+                                map.flyTo([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 4 });
 
-                            // Zoom-in su locations[CurrentLocation + 1]; lo zoom dura 4 secondi
-                            map.flyTo([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 4 });
+                                // Mostra il popup della nuova posizione
+                                markers[nextLocationIndex].openPopup();
 
-                            // Mostra il popup della nuova posizione
-                            markers[nextLocationIndex].openPopup();
+                                currentLocationIndex = nextLocationIndex;
 
-                            currentLocationIndex = nextLocationIndex;
-
-                            // Chiamare la funzione di animazione dopo il completamento dello zoom-in
-                            setTimeout(function() {
-                                animateDrone();
-                            }, 5000); // Tempo di attesa dopo lo zoom-in (5000ms invece di 4000ms)
+                                // Chiamare la funzione di animazione dopo il completamento dello zoom-in
+                                setTimeout(function() {
+                                    animateDrone();
+                                }, 5000); // Tempo di attesa dopo lo zoom-in (5000ms invece di 4000ms)
+                            }
                         }
-                    }
 
-                    moveDrone();
+                        moveDrone();
+                    }, 1000); // Tempo dell'effetto di dissolvenza (1 secondo)
                 }, 1000); // Tempo dell'effetto di dissolvenza (1 secondo)
             }, 4000); // Tempo di attesa per lo zoom-out
         }
