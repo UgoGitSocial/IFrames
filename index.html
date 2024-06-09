@@ -88,10 +88,15 @@
                 // Aggiungi un marker per il drone se non esiste
                 if (!droneMarker) {
                     droneMarker = L.marker([currentLocation.lat, currentLocation.lon], {
-                        icon: L.divIcon({ className: 'drone-icon', html: '🚁' }),
+                        icon: L.icon({
+                            iconUrl: 'drone.png', // Percorso dell'immagine personalizzata del drone
+                            iconSize: [32, 32], // Dimensioni dell'immagine del drone (larghezza x altezza)
+                            iconAnchor: [16, 16] // Punto di ancoraggio dell'icona (centro)
+                        }),
                         interactive: false
                     }).addTo(map);
                 }
+
 
                 // Effetto di dissolvenza (fade out)
                 document.getElementById('map').style.opacity = 0;
