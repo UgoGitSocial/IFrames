@@ -46,6 +46,14 @@
         // Aggiungi i marker delle tappe alla mappa
         addMarkers();
 
+        // Funzione per disegnare la linea tra due località
+        function drawLine(from, to) {
+            if (polyline) {
+                map.removeLayer(polyline); // Rimuovi la linea precedente
+            }
+            polyline = L.polyline([from, to], { color: 'blue' }).addTo(map);
+        }
+
         // Funzione per animare il drone
         function animateDrone() {
             var currentLocation = locations[currentLocationIndex];
@@ -61,16 +69,20 @@
                 var nextLocation = locations[nextLocationIndex];
 
                 // Disegna una linea tra la località corrente e la prossima
-                if (polyline) {
-                    map.removeLayer(polyline); // Rimuovi la linea precedente
-                }
-                polyline = L.polyline([[currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]], { color: 'blue' }).addTo(map);
+                drawLine([currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]);
 
                 setTimeout(function() {
                     // Movimento verso la prossima località in 6 secondi
                     map.flyTo([nextLocation.lat, nextLocation.lon], 8, { animate: true, duration: 6 });
 
+                    // Ridisegna la linea durante il movimento
+                    var moveInterval = setInterval(function() {
+                        drawLine([currentLocation.lat, currentLocation.lon], [nextLocation.lat, nextLocation.lon]);
+                    }, 100);
+
                     setTimeout(function() {
+                        clearInterval(moveInterval); // Ferma il ridisegno della linea
+
                         // Rimuovi la linea prima dello zoom-in
                         map.removeLayer(polyline);
 
