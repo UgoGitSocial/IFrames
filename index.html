@@ -113,6 +113,10 @@
                         // Rimuovi la linea prima dello zoom-in
                         map.removeLayer(polyline);
 
+                        // Rimuovi il drone prima dello zoom-in
+                        map.removeLayer(droneMarker);
+                        droneMarker = null;
+
                         // Zoom-in su locations[CurrentLocation + 1]; lo zoom dura 4 secondi
                         map.flyTo([nextLocation.lat, nextLocation.lon], 13, { animate: true, duration: 4 });
 
