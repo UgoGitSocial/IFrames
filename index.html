@@ -8,6 +8,9 @@
         #map {
             height: 100vh;
         }
+        .drone-icon {
+            font-size: 24px; /* Aumenta la dimensione dell'icona del drone */
+        }
     </style>
 </head>
 <body>
@@ -94,6 +97,7 @@
                         var newLat = startPoint[0] + (stepLat * currentStep);
                         var newLon = startPoint[1] + (stepLon * currentStep);
                         droneMarker.setLatLng([newLat, newLon]);
+                        map.panTo([newLat, newLon], { animate: true, duration: 1 / 60 });
                         currentStep++;
                         requestAnimationFrame(moveDrone);
                     } else {
